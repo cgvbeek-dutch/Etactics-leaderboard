@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Etactics Operations Wall</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --panel: #0f1525;
+    --panel-border: #1e2a45;
+    --accent-gold: #f0c040;
+    --accent-blue: #2d7dd2;
+    --accent-teal: #00c9a7;
+    --text-primary: #e8edf5;
+    --text-muted: #6b7fa3;
+    --rank-1: #f0c040;
+    --rank-2: #b0bec5;
+    --rank-3: #cd7f32;
+    --row-hover: rgba(45, 125, 210, 0.08);
+    --divider: rgba(255,255,255,0.05);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 20% 20%, rgba(45,125,210,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(0,201,167,0.08) 0%, transparent 50%),
+      linear-gradient(135deg, #0a0e1a 0%, #0d1220 100%);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 2.5rem 3rem;
+    gap: 1.5rem;
+  }
+
+  /* Grid noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .content { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 1.5rem; height: 100%; }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--panel-border);
+    padding-bottom: 1rem;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .logo-mark {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-teal));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    color: white;
+    letter-spacing: 1px;
+  }
+
+  .company-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 3px;
+    color: var(--text-primary);
+  }
+
+  .company-sub {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 1px;
+  }
+
+  .header-right {
+    text-align: right;
+  }
+
+  .live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent-teal);
+    font-weight: 500;
+  }
+
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--accent-teal);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  .last-updated {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Boards container */
+  .boards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    flex: 1;
+  }
+
+  /* Board panel */
+  .board {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .board:nth-child(2) { animation-delay: 0.15s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .board-header {
+    padding: 1.4rem 1.8rem 1rem;
+    border-bottom: 1px solid var(--divider);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .board-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .board-kahoot .board-header::before { background: linear-gradient(90deg, var(--accent-gold), #ff8c42); }
+  .board-allhands .board-header::before { background: linear-gradient(90deg, var(--accent-blue), var(--accent-teal)); }
+
+  .board-title-group {}
+
+  .board-eyebrow {
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .board-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+
+  .board-kahoot .board-title { color: var(--accent-gold); }
+  .board-allhands .board-title { color: #7ec8f7; }
+
+  .board-season {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Table */
+  .board-table {
+    flex: 1;
+    overflow: hidden;
+    padding: 0.5rem 0;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr auto;
+    align-items: center;
+    padding: 0.6rem 1.8rem;
+    gap: 1rem;
+    transition: background 0.2s;
+    border-bottom: 1px solid var(--divider);
+  }
+
+  .row:last-child { border-bottom: none; }
+  .row:hover { background: var(--row-hover); }
+
+  /* Top 3 rows get special treatment */
+  .row.top-1 { background: rgba(240,192,64,0.05); }
+  .row.top-2 { background: rgba(176,190,197,0.04); }
+  .row.top-3 { background: rgba(205,127,50,0.04); }
+
+  .rank {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .row.top-1 .rank { color: var(--rank-1); }
+  .row.top-2 .rank { color: var(--rank-2); }
+  .row.top-3 .rank { color: var(--rank-3); }
+  .row:not(.top-1):not(.top-2):not(.top-3) .rank { color: var(--text-muted); font-size: 1rem; }
+
+  .name-group {}
+
+  .name {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+
+  .row.top-1 .name { font-weight: 600; }
+
+  .score-group {
+    text-align: right;
+  }
+
+  .score {
+    font-family: 'DM Mono', monospace;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .row.top-1 .score { color: var(--accent-gold); font-size: 1.05rem; }
+
+  .score-label {
+    font-size: 0.58rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: right;
+  }
+
+  /* Bar under score */
+  .score-bar-wrap {
+    grid-column: 1 / -1;
+    height: 2px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 2px;
+    margin-top: -0.3rem;
+    overflow: hidden;
+    display: none; /* optional, enable if desired */
+  }
+
+  /* Footer strip */
+  .board-footer {
+    padding: 0.8rem 1.8rem;
+    border-top: 1px solid var(--divider);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-stat {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .footer-stat span {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  /* Bottom ticker */
+  .ticker {
+    border-top: 1px solid var(--panel-border);
+    padding-top: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    overflow: hidden;
+  }
+
+  .ticker-label {
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent-blue);
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  .ticker-text {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    white-space: nowrap;
+    animation: ticker 30s linear infinite;
+  }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .crown { font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<div class="content">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="logo-mark">E</div>
+      <div>
+        <div class="company-name">Etactics</div>
+        <div class="company-sub">Operations Wall — Team Standings</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="live-badge"><div class="live-dot"></div> Live Display</div>
+      <div class="last-updated" id="lastUpdated">Updated: —</div>
+    </div>
+  </div>
+
+  <!-- Boards -->
+  <div class="boards">
+
+    <!-- KAHOOT LEADERBOARD -->
+    <!-- =====================================================
+         EDIT KAHOOT STANDINGS BELOW
+         Format: { name, team, score, label }
+         score = cumulative Kahoot points this year
+         label = displayed under score (e.g. "pts" or "2/2 played")
+         ===================================================== -->
+    <div class="board board-kahoot" id="board-kahoot">
+      <div class="board-header">
+        <div class="board-title-group">
+          <div class="board-eyebrow">Monthly Challenge</div>
+          <div class="board-title">Kahoot Cup</div>
+        </div>
+        <div class="board-season">2025 Season</div>
+      </div>
+      <div class="board-table" id="kahoot-rows"></div>
+      <div class="board-footer">
+        <div class="footer-stat">Rounds played: <span id="kahoot-rounds">—</span></div>
+        <div class="footer-stat">Participants: <span id="kahoot-participants">—</span></div>
+      </div>
+    </div>
+
+    <!-- ANNUAL LEADERSHIP LEADERBOARD -->
+    <!-- =====================================================
+         EDIT ANNUAL LEADERSHIP STANDINGS BELOW
+         Same format as above
+         ===================================================== -->
+    <div class="board board-allhands" id="board-allhands">
+      <div class="board-header">
+        <div class="board-title-group">
+          <div class="board-eyebrow">Annual Recognition</div>
+          <div class="board-title">Leadership Board</div>
+        </div>
+        <div class="board-season">2025 Season</div>
+      </div>
+      <div class="board-table" id="allhands-rows"></div>
+      <div class="board-footer">
+        <div class="footer-stat">Rounds played: <span id="allhands-rounds">—</span></div>
+        <div class="footer-stat">Participants: <span id="allhands-participants">—</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Ticker -->
+  <div class="ticker">
+    <div class="ticker-label">📣 Etactics</div>
+    <div class="ticker-text" id="ticker-text"></div>
+  </div>
+
+</div>
+
+<script>
+// =============================================================
+//
+//  ETACTICS OPERATIONS WALL — LEADERBOARD SETUP GUIDE
+//
+// =============================================================
+//
+//  OPTION A: MANUAL UPDATES (no Google Sheets needed)
+//  ---------------------------------------------------
+//  Edit the CONFIG object below directly in this file.
+//  Update names, scores, and labels after each Kahoot/meeting.
+//  Save the file and re-upload to your host (GitHub Pages or
+//  Tiiny.host). DAKboard will refresh automatically.
+//
+// =============================================================
+//
+//  OPTION B: LIVE GOOGLE SHEETS INTEGRATION (recommended)
+//  -------------------------------------------------------
+//
+//  STEP 1 — SET UP YOUR GOOGLE SHEET
+//    • Create a new Google Sheet
+//    • Create two tabs: name them exactly  "Kahoot"  and  "Leadership"
+//    • In each tab, add these column headers in Row 1:
+//        A: Name   B: Score   C: Label
+//      Example row:   Jordan Mitchell | 9200 | 9,200 pts
+//    • Fill in your standings data from Row 2 downward
+//    • No need to sort — the page ranks automatically by Score
+//
+//  STEP 2 — PUBLISH THE SHEET
+//    • In Google Sheets: File → Share → Publish to web
+//    • Set the first dropdown to "Entire document"
+//    • Set the second dropdown to "CSV"
+//    • Click Publish and copy the URL shown
+//    • The URL will look like:
+//      https://docs.google.com/spreadsheets/d/SHEET_ID/pub?output=csv
+//    • For the second tab, add &gid=TAB_ID to the URL
+//      (find Tab ID by right-clicking the tab → "Get link to this tab")
+//    • Paste both URLs into SHEETS_CONFIG below and set USE_SHEETS to true
+//
+//  STEP 3 — HOST THIS FILE
+//    GitHub Pages (free, recommended):
+//      1. Create a free account at github.com
+//      2. Click "New repository" → name it  etactics-leaderboard
+//      3. Upload this HTML file, rename it to  index.html
+//      4. Go to Settings → Pages → Source: Deploy from branch → main
+//      5. Your URL will be:  https://YOURUSERNAME.github.io/etactics-leaderboard
+//
+//    Tiiny.host (simplest, no account needed):
+//      1. Go to tiiny.host
+//      2. Drag and drop this HTML file
+//      3. Copy the URL given to you
+//
+//  STEP 4 — ADD TO DAKBOARD
+//    1. Log in to your DAKboard account at dakboard.com
+//    2. Open your screen layout in Edit mode
+//    3. Click "+ Add Block" → choose "Custom URL / Webpage"
+//    4. Paste your hosted URL (from Step 3) into the URL field
+//    5. Set the block to fill your desired area of the screen
+//    6. Set Refresh Interval to 15 or 30 minutes
+//    7. Save and publish your layout
+//
+//  UPDATING STANDINGS GOING FORWARD (with Google Sheets):
+//    • Open your Google Sheet
+//    • Edit names, scores, and labels directly in the cells
+//    • Save — DAKboard will pick up changes on its next refresh cycle
+//    • No need to touch this HTML file again
+//
+//  UPDATING THE TICKER MESSAGE:
+//    • Find the "ticker" line in the CONFIG object below
+//    • Edit the text between the quotes
+//    • Use  •  (bullet + spaces) to separate items
+//    • Re-upload if hosting manually, or edit before hosting
+//
+// =============================================================
+//
+//  ✏️  EDIT YOUR DATA HERE — everything else updates automatically
+//
+// =============================================================
+
+// Set to true once you have your Google Sheets URLs ready (see STEP 2 above)
+const USE_SHEETS = true;
+
+const SHEETS_CONFIG = {
+  kahoot:     "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0xWmUWvPmlaHQDi6KwCGze4OElKXHldnYCq7OTwpm7oxUWhpyPhzmdaRAJOU88KKExtWb_baKuQpu/pub?gid=0&single=true&output=csv", // ← paste your Kahoot tab published CSV URL here
+  leadership: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0xWmUWvPmlaHQDi6KwCGze4OElKXHldnYCq7OTwpm7oxUWhpyPhzmdaRAJOU88KKExtWb_baKuQpu/pub?gid=1204359914&single=true&output=csv", // ← paste your Leadership tab published CSV URL here
+};
+
+const CONFIG = {
+  kahoot: {
+    roundsPlayed: 1,          // ← update each month
+    participants: 38,         // ← update each month
+    standings: [
+      // { name, team, score, label }
+      // score is used for ranking (higher = better)
+      { name: "Jordan Mitchell",   score: 9200,  label: "9,200 pts" },
+      { name: "Taylor Sanders",    score: 8750,  label: "8,750 pts" },
+      { name: "Morgan Reynolds",   score: 8400,  label: "8,400 pts" },
+      { name: "Casey Lambert",     score: 7900,  label: "7,900 pts" },
+      { name: "Riley Peterson",    score: 7500,  label: "7,500 pts" },
+      { name: "Drew Kimball",      score: 7100,  label: "7,100 pts" },
+      { name: "Alex Harper",       score: 6800,  label: "6,800 pts" },
+      { name: "Quinn Bennett",     score: 6500,  label: "6,500 pts" },
+      { name: "Sam Wallace",       score: 6100,  label: "6,100 pts" },
+      { name: "Jamie Foster",      score: 5800,  label: "5,800 pts" },
+    ]
+  },
+
+  allhands: {
+    roundsPlayed: 1,          // ← update each month
+    participants: 41,         // ← update each month
+    standings: [
+      { name: "Taylor Sanders",    score: 950,   label: "950 pts"  },
+      { name: "Jordan Mitchell",   score: 900,   label: "900 pts"  },
+      { name: "Riley Peterson",    score: 875,   label: "875 pts"  },
+      { name: "Morgan Reynolds",   score: 840,   label: "840 pts"  },
+      { name: "Sam Wallace",       score: 800,   label: "800 pts"  },
+      { name: "Casey Lambert",     score: 770,   label: "770 pts"  },
+      { name: "Alex Harper",       score: 740,   label: "740 pts"  },
+      { name: "Drew Kimball",      score: 700,   label: "700 pts"  },
+      { name: "Quinn Bennett",     score: 660,   label: "660 pts"  },
+      { name: "Jamie Foster",      score: 620,   label: "620 pts"  },
+    ]
+  },
+
+  // Ticker message — update with current highlights
+  ticker: "Next Kahoot: March All-Hands Meeting  •  Current leader: Jordan Mitchell (Kahoot Cup) & Taylor Sanders (Leadership Board)  •  Keep reading the COO Newsletter — every question comes from it!  •  "
+};
+
+// =============================================================
+//  Rendering — no need to edit below this line
+// =============================================================
+
+function rankClass(i) {
+  if (i === 0) return 'row top-1';
+  if (i === 1) return 'row top-2';
+  if (i === 2) return 'row top-3';
+  return 'row';
+}
+
+function rankDisplay(i) {
+  if (i === 0) return '👑';
+  return i + 1;
+}
+
+function renderBoard(boardId, rowsId, roundsId, participantsId, config) {
+  const rowsEl = document.getElementById(rowsId);
+  const sorted = [...config.standings].sort((a,b) => b.score - a.score);
+
+  rowsEl.innerHTML = sorted.map((p, i) => `
+    <div class="${rankClass(i)}">
+      <div class="rank">${rankDisplay(i)}</div>
+      <div class="name-group">
+        <div class="name">${p.name}</div>
+      </div>
+      <div class="score-group">
+        <div class="score">${p.label}</div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById(roundsId).textContent = config.roundsPlayed;
+  document.getElementById(participantsId).textContent = config.participants;
+}
+
+function parseCSV(csv) {
+  const lines = csv.trim().split('\n').slice(1); // skip header row
+  return lines.map(line => {
+    const [name, score, label] = line.split(',').map(s => s.trim().replace(/^"|"$/g, ''));
+    return { name, score: parseFloat(score), label };
+  }).filter(p => p.name && !isNaN(p.score));
+}
+
+async function fetchSheet(url) {
+  const res = await fetch(url);
+  const text = await res.text();
+  return parseCSV(text);
+}
+
+async function init() {
+  if (USE_SHEETS && SHEETS_CONFIG.kahoot && SHEETS_CONFIG.leadership) {
+    try {
+      const [kahootData, leadershipData] = await Promise.all([
+        fetchSheet(SHEETS_CONFIG.kahoot),
+        fetchSheet(SHEETS_CONFIG.leadership)
+      ]);
+      CONFIG.kahoot.standings = kahootData;
+      CONFIG.allhands.standings = leadershipData;
+    } catch (e) {
+      console.warn('Could not load Google Sheets data, falling back to CONFIG:', e);
+    }
+  }
+
+  renderBoard('board-kahoot', 'kahoot-rows', 'kahoot-rounds', 'kahoot-participants', CONFIG.kahoot);
+  renderBoard('board-allhands', 'allhands-rows', 'allhands-rounds', 'allhands-participants', CONFIG.allhands);
+
+  // Ticker — duplicate for seamless loop
+  const t = document.getElementById('ticker-text');
+  t.textContent = CONFIG.ticker + CONFIG.ticker;
+
+  // Last updated timestamp
+  const now = new Date();
+  document.getElementById('lastUpdated').textContent =
+    'Updated: ' + now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+init();
+</script>
+</body>
+</html>
