@@ -22,6 +22,20 @@
     --divider: rgba(255,255,255,0.05);
   }
 
+  /* Fluid type scale — scales with viewport width */
+  :root {
+    --f-xs:      clamp(0.6rem,  0.85vw, 0.8rem);
+    --f-sm:      clamp(0.75rem, 1.05vw, 1rem);
+    --f-base:    clamp(0.9rem,  1.3vw,  1.2rem);
+    --f-md:      clamp(1.1rem,  1.7vw,  1.5rem);
+    --f-lg:      clamp(1.4rem,  2.1vw,  2rem);
+    --f-xl:      clamp(1.6rem,  2.5vw,  2.4rem);
+    --space-sm:  clamp(0.4rem,  0.7vw,  0.8rem);
+    --space-md:  clamp(0.8rem,  1.3vw,  1.5rem);
+    --space-lg:  clamp(1.2rem,  2vw,    2.5rem);
+    --icon-size: clamp(36px,    4vw,    56px);
+  }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
@@ -35,8 +49,8 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    padding: 2.5rem 3rem;
-    gap: 1.5rem;
+    padding: var(--space-lg) clamp(1.5rem, 3vw, 3.5rem);
+    gap: var(--space-md);
   }
 
   /* Grid noise overlay */
@@ -70,29 +84,29 @@
   }
 
   .logo-mark {
-    width: 44px;
-    height: 44px;
+    width: var(--icon-size);
+    height: var(--icon-size);
     background: linear-gradient(135deg, var(--accent-blue), var(--accent-teal));
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.4rem;
+    font-size: var(--f-md);
     color: white;
     letter-spacing: 1px;
   }
 
   .company-name {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.6rem;
-    letter-spacing: 3px;
+    font-size: var(--f-xl);
+    letter-spacing: 0.15em;
     color: var(--text-primary);
   }
 
   .company-sub {
-    font-size: 0.7rem;
-    letter-spacing: 2px;
+    font-size: var(--f-xs);
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--text-muted);
     margin-top: 1px;
@@ -106,16 +120,16 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 0.65rem;
-    letter-spacing: 2px;
+    font-size: var(--f-xs);
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--accent-teal);
     font-weight: 500;
   }
 
   .live-dot {
-    width: 7px;
-    height: 7px;
+    width: clamp(6px, 0.6vw, 9px);
+    height: clamp(6px, 0.6vw, 9px);
     background: var(--accent-teal);
     border-radius: 50%;
     animation: pulse 2s infinite;
@@ -127,7 +141,7 @@
   }
 
   .last-updated {
-    font-size: 0.7rem;
+    font-size: var(--f-xs);
     color: var(--text-muted);
     margin-top: 4px;
     font-family: 'DM Mono', monospace;
@@ -137,7 +151,7 @@
   .boards {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    gap: var(--space-md);
     flex: 1;
   }
 
@@ -160,7 +174,7 @@
   }
 
   .board-header {
-    padding: 1.4rem 1.8rem 1rem;
+    padding: var(--space-md) clamp(1rem, 2vw, 2rem) var(--space-sm);
     border-bottom: 1px solid var(--divider);
     display: flex;
     align-items: flex-end;
@@ -182,8 +196,8 @@
   .board-title-group {}
 
   .board-eyebrow {
-    font-size: 0.6rem;
-    letter-spacing: 3px;
+    font-size: var(--f-xs);
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--text-muted);
     margin-bottom: 4px;
@@ -191,8 +205,8 @@
 
   .board-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.6rem;
-    letter-spacing: 2px;
+    font-size: var(--f-xl);
+    letter-spacing: 0.1em;
     line-height: 1;
   }
 
@@ -200,9 +214,9 @@
   .board-allhands .board-title { color: #7ec8f7; }
 
   .board-season {
-    font-size: 0.65rem;
+    font-size: var(--f-xs);
     color: var(--text-muted);
-    letter-spacing: 1px;
+    letter-spacing: 0.08em;
     font-family: 'DM Mono', monospace;
   }
 
@@ -215,10 +229,10 @@
 
   .row {
     display: grid;
-    grid-template-columns: 2.5rem 1fr auto;
+    grid-template-columns: clamp(2rem, 3vw, 3.5rem) 1fr auto;
     align-items: center;
-    padding: 0.6rem 1.8rem;
-    gap: 1rem;
+    padding: var(--space-sm) clamp(1rem, 2vw, 2rem);
+    gap: clamp(0.6rem, 1vw, 1.2rem);
     transition: background 0.2s;
     border-bottom: 1px solid var(--divider);
   }
@@ -233,7 +247,7 @@
 
   .rank {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.3rem;
+    font-size: var(--f-lg);
     text-align: center;
     line-height: 1;
   }
@@ -241,12 +255,12 @@
   .row.top-1 .rank { color: var(--rank-1); }
   .row.top-2 .rank { color: var(--rank-2); }
   .row.top-3 .rank { color: var(--rank-3); }
-  .row:not(.top-1):not(.top-2):not(.top-3) .rank { color: var(--text-muted); font-size: 1rem; }
+  .row:not(.top-1):not(.top-2):not(.top-3) .rank { color: var(--text-muted); font-size: var(--f-base); }
 
   .name-group {}
 
   .name {
-    font-size: 0.95rem;
+    font-size: var(--f-base);
     font-weight: 500;
     color: var(--text-primary);
     line-height: 1.2;
@@ -260,12 +274,12 @@
 
   .score {
     font-family: 'DM Mono', monospace;
-    font-size: 1rem;
+    font-size: var(--f-md);
     font-weight: 500;
     color: var(--text-primary);
   }
 
-  .row.top-1 .score { color: var(--accent-gold); font-size: 1.05rem; }
+  .row.top-1 .score { color: var(--accent-gold); font-size: var(--f-md); }
 
   .score-label {
     font-size: 0.58rem;
@@ -288,7 +302,7 @@
 
   /* Footer strip */
   .board-footer {
-    padding: 0.8rem 1.8rem;
+    padding: var(--space-sm) clamp(1rem, 2vw, 2rem);
     border-top: 1px solid var(--divider);
     display: flex;
     justify-content: space-between;
@@ -296,9 +310,9 @@
   }
 
   .footer-stat {
-    font-size: 0.65rem;
+    font-size: var(--f-xs);
     color: var(--text-muted);
-    letter-spacing: 1px;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     font-family: 'DM Mono', monospace;
   }
@@ -319,8 +333,8 @@
   }
 
   .ticker-label {
-    font-size: 0.6rem;
-    letter-spacing: 2px;
+    font-size: var(--f-xs);
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--accent-blue);
     white-space: nowrap;
@@ -328,7 +342,7 @@
   }
 
   .ticker-text {
-    font-size: 0.7rem;
+    font-size: var(--f-sm);
     color: var(--text-muted);
     font-family: 'DM Mono', monospace;
     white-space: nowrap;
@@ -499,8 +513,8 @@
 const USE_SHEETS = true;
 
 const SHEETS_CONFIG = {
-  kahoot:     "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0xWmUWvPmlaHQDi6KwCGze4OElKXHldnYCq7OTwpm7oxUWhpyPhzmdaRAJOU88KKExtWb_baKuQpu/pub?gid=0&single=true&output=csv", // ← paste your Kahoot tab published CSV URL here
-  leadership: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0xWmUWvPmlaHQDi6KwCGze4OElKXHldnYCq7OTwpm7oxUWhpyPhzmdaRAJOU88KKExtWb_baKuQpu/pub?gid=1204359914&single=true&output=csv", // ← paste your Leadership tab published CSV URL here
+  kahoot:     "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0xWmUWvPmlaHQDi6KwCGze4OElKXHldnYCq7OTwpm7oxUWhpyPhzmdaRAJOU88KKExtWb_baKuQpu/pub?gid=0&single=true&output=csv",
+  leadership: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0xWmUWvPmlaHQDi6KwCGze4OElKXHldnYCq7OTwpm7oxUWhpyPhzmdaRAJOU88KKExtWb_baKuQpu/pub?gid=1204359914&single=true&output=csv",
 };
 
 const CONFIG = {
